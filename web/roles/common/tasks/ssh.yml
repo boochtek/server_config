@@ -1,0 +1,83 @@
+---
+
+# Ensure SSH client and server are installed, just in case.
+- name: Install SSH
+  apt:
+    name: "{{ item }}"
+  with_items:
+    - ssh
+    - openssh-server
+
+- name: Add a warning message to /etc/issue
+  copy:
+    src: files/etc/issue
+    dest: /etc/issue
+
+- name: Use the same warning message for local and network logins
+  file:
+    src: /etc/issue
+    dest: /etc/issue.net
+    state: link
+    force: yes
+
+- name: Use the warning message for SSH
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    line: Banner /etc/issue.net
+    regexp: '^#?Banner\s+'
+  notify:
+    - Reload SSHD config
+
+- name: Only allow root to run specific commands
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    line: PermitRootLogin forced-commands-only
+    regexp: '^#?PermitRootLogin\s+'
+  tags: remove_root_access
+  notify:
+    - Reload SSHD config
+
+# Suggested by http://kitenet.net/~joey/blog/entry/ssh_port_forwarding/.
+- name: Disable TCP port forwarding
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    line: AllowTcpForwarding no
+  notify:
+    - Reload SSHD config
+
+# NOTE: Be sure you have set up SSH keys for your accounts before running this!
+- name: Require SSH keys; don't allow password authentication
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    line: PasswordAuthentication no
+    regexp: '^#?PasswordAuthentication\s+'
+  notify:
+    - Reload SSHD config
+
+# NOTE: Be sure you've added all your users to one of the specified groups.
+- name: Only allow "real" users to log in via SSH
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    line: AllowGroups users
+    regexp: '^#?AllowGroups\s+'
+  notify:
+    - Reload SSHD config
+
+- name: Automatically log users off if they're idle for more than 30 minutes
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    line: ClientAliveInterval 30m
+    regexp: '^#?ClientAliveInterval\s+'
+  notify:
+    - Reload SSHD config
+
+- name: Automatically log users off if there's no response from the client
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    line: ClientAliveCountMax 0
+    regexp: '^#?ClientAliveCountMax\s+'
+  notify:
+    - Reload SSHD config
+
+# TODO: fail2ban
+# TODO: Move SSH to a different port

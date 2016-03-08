@@ -49,9 +49,11 @@ resource "digitalocean_droplet" "main" {
     }
 
     provisioner "remote-exec" {
+      # Can't run these via root Ansible, as they'd take away our SSH access.
       inline = [
           # Don't allow SSH access directly to root.
           "rm /root/.ssh/authorized_keys",
+          "sudo sed -i -e 's/^PermitRootLogin .*$/PermitRootLogin forced-commands-only/' /etc/ssh/sshd_config",
       ]
     }
 
