@@ -4,3 +4,4 @@
     msg: Common OS configuration
 
 - include: updates.yml
+- include: sudo.yml

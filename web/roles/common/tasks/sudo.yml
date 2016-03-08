@@ -1,0 +1,27 @@
+---
+
+# Ensure sudo is installed, just in case. Some installations don't automatically include it.
+- name: Install sudo
+  apt:
+    name: sudo
+
+- name: Require root password when using sudo
+  copy:
+    src: files/sudoers.d/require_root_password
+    dest: /etc/sudoers.d/require_root_password
+    validate: 'visudo -cf %s'
+    mode: 0440
+
+- name: Set environment variables that can be passed through sudo
+  copy:
+    src: files/sudoers.d/environment
+    dest: /etc/sudoers.d/environment
+    validate: 'visudo -cf %s'
+    mode: 0440
+
+- name: Allow installing and updating software without a password
+  copy:
+    src: files/sudoers.d/package_management
+    dest: /etc/sudoers.d/package_management
+    validate: 'visudo -cf %s'
+    mode: 0440

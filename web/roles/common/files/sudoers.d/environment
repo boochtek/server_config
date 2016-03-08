@@ -1,0 +1,18 @@
+# The sudo command ensures that certain environment variables are not carried over, to prevent security problems.
+# We need to tweak the set of environment variables a bit.
+
+# Disallow all environment variables, except the ones we explicitly list.
+Defaults        env_reset
+
+# Set $HOME to the target user's home directory. Allows mysql clients to find root's $HOME/.my.cnf config file automatically.
+Defaults        always_set_home
+
+# Allow the basics.
+Defaults        env_keep = "PATH MAIL PS1 PS2 HOSTNAME HISTSIZE \
+                           LS_COLORS COLORS INPUTRC TZ \
+                           LANG LC_ADDRESS LC_CTYPE LC_COLLATE LC_IDENTIFICATION \
+                           LC_MEASUREMENT LC_MESSAGES LC_MONETARY LC_NAME LC_NUMERIC \
+                           LC_PAPER LC_TELEPHONE LC_TIME LC_ALL LANGUAGE LINGUAS"
+
+# Allow ssh-agent forwarding. See http://serverfault.com/questions/107187/.
+Defaults>root   env_keep += "SSH_AUTH_SOCK"

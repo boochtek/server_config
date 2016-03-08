@@ -1,0 +1,14 @@
+# Since installing and updating software from standard repositories is a common admin task with low security risk,
+# we'll allow it without requiring a password.
+
+# Admin users (in the sudo group) may install and update software packages without having to supply a password.
+Cmnd_Alias      PACKAGE_INFO    = /usr/bin/apt-get install *, /usr/bin/apt-get check, \
+                                  /usr/bin/apt-cache search *, /usr/bin/apt-cache show *, /usr/bin/apt-cache showpkg *, \
+                                  /usr/bin/aptitude search *, /usr/bin/aptitude show *, /usr/bin/aptitude changelog *
+Cmnd_Alias      PACKAGE_INSTALL = /usr/bin/apt-get install *, \
+                                  /usr/bin/aptitude install *, /usr/bin/aptitude reinstall *
+Cmnd_Alias      PACKAGE_UPDATE  = /usr/bin/apt-get update, /usr/bin/apt-get upgrade, \
+                                  /usr/bin/aptitude update, /usr/bin/aptitude safe-upgrade
+Cmnd_Alias      PACKAGE_CLEAN =   /usr/bin/apt-get autoremove, /usr/bin/apt-get clean, /usr/bin/apt-get autoclean, \
+                                  /usr/bin/aptitude clean, /usr/bin/aptitude autoclean
+%sudo           ALL = NOPASSWD: PACKAGE_INFO, PACKAGE_INSTALL, PACKAGE_UPDATE, PACKAGE_CLEAN
