@@ -1,0 +1,9 @@
+---
+
+- name: Install NTP
+  apt:
+    name: "{{ item }}"
+  with_items:
+    - ntp
+    - ntp-doc
+    - ntpdate

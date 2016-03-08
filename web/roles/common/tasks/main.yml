@@ -6,3 +6,4 @@
 - include: updates.yml
 - include: users.yml
 - include: sudo.yml
+- include: ntp.yml
