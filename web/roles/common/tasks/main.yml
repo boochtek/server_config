@@ -1,0 +1,6 @@
+---
+
+- debug:
+    msg: Common OS configuration
+
+- include: updates.yml
