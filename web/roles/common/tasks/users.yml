@@ -9,6 +9,12 @@
     password: "$6$rounds=1000000$uTxhIGDYV$xPstDC9EdNepwkiHPx.IbF.RUWWvXELUye1P7Rpr5Tf.PMrmqk5aX/IITGmfuYPFwrliTBSH44oCWO22hXdsB1"
     update_password: always
 
+- name: Remove root SSH keys
+  file:
+    path: /root/.ssh/authorized_keys
+    state: absent
+  tags: remove_root_access
+
 - name: Add account for Craig
   user:
     name: booch
