@@ -1,0 +1,36 @@
+---
+
+# The passwords we use are pre-encrpyted, as passed to `usermod` with the `-p` option.
+# To create them, use `mkpasswd -m sha-512 -R 1000000`.
+
+- name: Set root password
+  user:
+    name: root
+    password: "$6$rounds=1000000$uTxhIGDYV$xPstDC9EdNepwkiHPx.IbF.RUWWvXELUye1P7Rpr5Tf.PMrmqk5aX/IITGmfuYPFwrliTBSH44oCWO22hXdsB1"
+    update_password: always
+
+- name: Add account for Craig
+  user:
+    name: booch
+    comment: Craig Buchek
+    groups: sudo,www-data
+    append: yes # Append the above groups to the default set of groups.
+    password: "$6$rounds=1000000$2A1oHVyHQlc$QnP8ctjTg/LIifYXUXg0zMWF0bMIwYl5hNKiF3pqFW1dEUkyvxMBj2KNzeoabcAumeJRl9cbp7Vgb0kNyJ4rM/"
+    update_password: on_create # Don't override the password if the user has changed it.
+    shell: /bin/bash
+
+- name: Add SSH directory for Craig
+  file:
+    path: /home/booch/.ssh
+    state: directory
+    owner: booch
+    group: booch
+    mode: 0700
+
+- name: Add SSH keys that can Craig can log in with
+  copy:
+    src: files/users/booch/authorized_keys
+    dest: /home/booch/.ssh/authorized_keys
+    owner: booch
+    group: booch
+    mode: 0600
