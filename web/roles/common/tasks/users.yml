@@ -35,7 +35,7 @@
 
 - name: Add SSH keys that can Craig can log in with
   copy:
-    src: files/users/booch/authorized_keys
+    src: files/home/booch/ssh/authorized_keys
     dest: /home/booch/.ssh/authorized_keys
     owner: booch
     group: booch

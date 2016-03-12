@@ -7,21 +7,21 @@
 
 - name: Require root password when using sudo
   copy:
-    src: files/sudoers.d/require_root_password
+    src: files/etc/sudoers.d/require_root_password
     dest: /etc/sudoers.d/require_root_password
     validate: 'visudo -cf %s'
     mode: 0440
 
 - name: Set environment variables that can be passed through sudo
   copy:
-    src: files/sudoers.d/environment
+    src: files/etc/sudoers.d/environment
     dest: /etc/sudoers.d/environment
     validate: 'visudo -cf %s'
     mode: 0440
 
 - name: Allow installing and updating software without a password
   copy:
-    src: files/sudoers.d/package_management
+    src: files/etc/sudoers.d/package_management
     dest: /etc/sudoers.d/package_management
     validate: 'visudo -cf %s'
     mode: 0440
