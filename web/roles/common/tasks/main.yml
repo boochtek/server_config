@@ -8,3 +8,5 @@
 - include: sudo.yml
 - include: ssh.yml
 - include: ntp.yml
+- include: postfix.yml
+  tags: postfix

@@ -1,0 +1,125 @@
+---
+
+# NOTE: This configuration is currently only for outbound emails.
+
+
+- name: Install Postfix
+  apt:
+    name: "{{ item }}"
+  with_items:
+    - postfix
+    - bsd-mailx
+
+- name: Purge other SMTP servers
+  apt:
+    name: '{{ item }}'
+    state: absent
+    purge: yes
+  with_items:
+    - exim4-base
+    - exim4-config
+    - exim4-daemon-light
+    - nullmailer
+
+- name: Ensure Postfix config file exists
+  file:
+    dest: /etc/postfix/main.cf
+    state: touch
+  changed_when: false
+
+- name: Set Postfix host name
+  lineinfile:
+    dest: /etc/postfix/main.cf
+    line: "myhostname = {{ansible_hostname}}"
+    regexp: '^#?myhostname\s*='
+
+- name: Set Postfix domain name
+  lineinfile:
+    dest: /etc/postfix/main.cf
+    line: "mydomain = {{ansible_domain}}"
+    regexp: '^#?mydomain\s*='
+
+- name: Configure (non-virtual) domains that Postfix should receive emails for
+  lineinfile:
+    dest: /etc/postfix/main.cf
+    line: 'mydestination = localhost, $myhostname'
+    regexp: '^#?mydestination\s*='
+
+- name: Configure Postfix to add our domain to any addresses that are not specified
+  lineinfile:
+    dest: /etc/postfix/main.cf
+    line: 'myorigin = $mydomain'
+    regexp: '^#?myorigin\s*='
+
+- name: Configure Postfix to denote which systems can send outbound email (without having to authenticate)
+  lineinfile:
+    dest: /etc/postfix/main.cf
+    line: 'mynetworks = 127.0.0.0/8, hash:/etc/postfix/mynetworks'
+    regexp: '^#?mynetworks\s*='
+
+# TODO: We should probably keep the Debian defaults of 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128.
+- name: Configure Postfix networks allowed to relay through us
+  copy:
+    src: etc/postfix/mynetworks
+    dest: /etc/postfix/mynetworks
+  notify:
+    - Generate Postfix mynetworks database
+
+# We want to remove version info, for security reasons.
+- name: Set Postfix SMTP banner
+  lineinfile:
+    dest: /etc/postfix/main.cf
+    line: 'smtpd_banner = $myhostname ESMTP $mail_name'
+    regexp: '^#?smtpd_banner\s*='
+
+- name: Set Postfix mail aliases file
+  lineinfile:
+    dest: /etc/postfix/main.cf
+    line: '{{ item }} = hash:/etc/aliases'
+    regexp: '^#?{{ item }}\s*='
+  with_items:
+    - alias_maps
+    - alias_database
+  notify:
+    - Generate Postfix alias database
+
+- name: Set maximum size for messages (50 MB)
+  lineinfile:
+    dest: /etc/postfix/main.cf
+    line: 'message_size_limit = 50000000'
+    regexp: '^#?message_size_limit\s*='
+
+- name: Set maximum size for mailboxes (1 GB)
+  lineinfile:
+    dest: /etc/postfix/main.cf
+    line: 'mailbox_size_limit = 1000000000'
+    regexp: '^#?mailbox_size_limit\s*='
+
+- name: Set Postfix retry limit to 1 day
+  lineinfile:
+    dest: /etc/postfix/main.cf
+    line: '{{ item }} = 1d'
+    regexp: '^#?{{ item }}\s*='
+  with_items:
+    - maximal_queue_lifetime
+    - bounce_queue_lifetime
+
+- name: Allow Postfix to accept emails for virtual sub-addresses (like `username+foo@domain.com`)
+  lineinfile:
+    dest: /etc/postfix/main.cf
+    line: 'recipient_delimiter = +'
+    regexp: '^#?recipient_delimiter\s*='
+
+# This is what makes the configuration outbound-only.
+- name: Configure Postfix to only listen for SMTP on localhost
+  lineinfile:
+    dest: /etc/postfix/main.cf
+    line: 'inet_interfaces = 127.0.0.1'
+    regexp: '^#?inet_interfaces\s*='
+
+# Mailman documentation recommends the following setting, so clients won't keep re-trying.
+- name: Ensure emails to unknown local addresses will generate a permanent error, not a transient error
+  lineinfile:
+    dest: /etc/postfix/main.cf
+    line: 'unknown_local_recipient_reject_code = 550'
+    regexp: '^#?unknown_local_recipient_reject_code\s*='

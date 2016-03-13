@@ -4,3 +4,19 @@
   service:
     name: sshd
     state: reloaded
+
+- name: Check Postfix configuation and restart
+  command: postfix check
+  notify:
+    - Restart postfix
+
+- name: Restart Postfix
+  service:
+    name: postfix
+    state: restarted
+
+- name: Generate Postfix alias database
+  command: newaliases
+
+- name: Generate Postfix mynetworks database
+  command: postmap /etc/postfix/mynetworks

@@ -1,0 +1,2 @@
+# These IPs are allowed to relay through our SMTP servers.
+# NOTE: The 2nd field is not used, but you'll get warnings from postmap if you leave it out.

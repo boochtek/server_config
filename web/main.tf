@@ -26,7 +26,7 @@ provider "dnsimple" {
 
 
 resource "digitalocean_droplet" "main" {
-    name = "ocean1"
+    name = "ocean1.${var.domain}"
     size = "1gb"
     image = "${var.base_image}"
     region = "nyc3"
