@@ -7,3 +7,9 @@
 - name: Update all installed packages (that don't require any package removals)
   apt:
     upgrade: safe
+
+# Apticron will send an email every day, if there are package updates to install.
+# NOTE: This installs exim4, which we'll need to uninstall before installing Postfix.
+- name: Install apticron
+  apt:
+    name: apticron
