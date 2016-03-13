@@ -29,14 +29,12 @@
   file:
     path: /home/booch/.ssh
     state: directory
-    owner: booch
-    group: booch
     mode: 0700
+  become_user: booch
 
 - name: Add SSH keys that can Craig can log in with
   copy:
     src: files/home/booch/ssh/authorized_keys
     dest: /home/booch/.ssh/authorized_keys
-    owner: booch
-    group: booch
     mode: 0600
+  become_user: booch
