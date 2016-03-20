@@ -1,0 +1,63 @@
+---
+
+- name: Install Shorewall
+  apt:
+    name: "{{ item }}"
+  with_items:
+    - shorewall
+    - shorewall-doc
+
+- name: Set Shorewall to run
+  lineinfile:
+    dest: /etc/default/shorewall
+    line: 'startup=1'
+    regexp: '^#?startup='
+  notify:
+    - Restart Shorewall
+
+- name: Start with basic Shorewall configuration
+  shell: 'cp -a /usr/share/doc/shorewall/examples/one-interface/* /etc/shorewall/ && gunzip -f *.gz'
+  args:
+    chdir: /etc/shorewall
+    creates: /etc/shorewall/rules
+  notify:
+    - Restart Shorewall
+
+- name: Enable Shorewall startup
+  lineinfile:
+    dest: /etc/shorewall/shorewall.conf
+    line: 'STARTUP_ENABLED=Yes'
+    regexp: '^#?STARTUP_ENABLED='
+  notify:
+    - Restart Shorewall
+
+- name: Set Shorewall log file
+  lineinfile:
+    dest: /etc/shorewall/shorewall.conf
+    line: 'LOGFILE=/var/log/shorewall.log'
+    regexp: '^#?LOGFILE='
+  notify:
+    - Restart Shorewall
+
+- name: Set Shorewall log rate limit
+  lineinfile:
+    dest: /etc/shorewall/shorewall.conf
+    line: 'LOGRATE=10/minute'
+    regexp: '^#?LOGRATE='
+  notify:
+    - Restart Shorewall
+
+- name: Set Shorewall log burst limit
+  lineinfile:
+    dest: /etc/shorewall/shorewall.conf
+    line: 'LOGBURST=5'
+    regexp: '^#?LOGBURST='
+  notify:
+    - Restart Shorewall
+
+- name: Create Shorewall log file
+  command: touch /var/log/shorewall.log
+  args:
+    creates: /var/log/shorewall.log
+  notify:
+    - Restart Shorewall

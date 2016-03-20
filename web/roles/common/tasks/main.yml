@@ -4,6 +4,7 @@
     msg: Common OS configuration
 
 - include: updates.yml
+- include: firewall.yml
 - include: users.yml
 - include: sudo.yml
 - include: ssh.yml

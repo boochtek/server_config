@@ -8,6 +8,11 @@
     - ssh
     - openssh-server
 
+- name: Set firewall rule for SSH
+  lineinfile:
+    dest: /etc/shorewall/rules
+    line: 'ACCEPT net $FW tcp 22'
+
 - name: Add a warning message to /etc/issue
   copy:
     src: files/etc/issue

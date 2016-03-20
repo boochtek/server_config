@@ -5,6 +5,11 @@
     name: sshd
     state: reloaded
 
+- name: Restart Shorewall
+  service:
+    name: shorewall
+    state: restarted
+
 - name: Check Postfix configuation and restart
   command: postfix check
   notify:
