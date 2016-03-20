@@ -4,10 +4,16 @@
     msg: Common OS configuration
 
 - include: updates.yml
+  tags: updates
 - include: firewall.yml
+  tags: firewall
 - include: users.yml
+  tags: users
 - include: sudo.yml
+  tags: sudo
 - include: ssh.yml
+  tags: ssh
 - include: ntp.yml
+  tags: ntp
 - include: postfix.yml
   tags: postfix
