@@ -1,5 +1,11 @@
 * Disable RPC ports
 * Stuff from http://wiki.boochtek.com/build/misc
+* Ansible stuff
+    * Use blockinfile in some places instead of lineinfile
+        * Useful for when we want blank lines separating and comments
+    * Combine some tasks using with_items
+        * We can use - { x: 'val', y: 'val' } then use {{ item.x }} and {{ item.y }}
+    * Could we write Ansible modules to do if/case statements? Multiple commands?
 * Postfix fixes
     * Had some problem restarting the service
     * Make sure outbound emails are actually getting sent
