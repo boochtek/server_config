@@ -1,0 +1,8 @@
+---
+
+- debug:
+    msg: Email
+
+- include: postfix.yml
+- include: imapd.yml
+- include: roundcube.yml

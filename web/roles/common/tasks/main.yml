@@ -17,3 +17,9 @@
   tags: ntp
 - include: postfix.yml
   tags: postfix
+- include: dns.yml
+  tags: dns
+- include: misc.yml
+  tags: misc
+- include: monitoring.yml
+  tags: monitoring

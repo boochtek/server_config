@@ -4,3 +4,9 @@
   roles:
     - role: common
       tags: common
+    - role: web
+      tags: web
+    - role: jenkins
+      tags: jenkins
+    - role: email
+      tags: email

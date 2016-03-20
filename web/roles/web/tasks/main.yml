@@ -1,0 +1,8 @@
+---
+
+- debug:
+    msg: Web
+
+- include: haproxy.yml
+- include: nginx.yml
+- include: dokuwiki.yml
