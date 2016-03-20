@@ -1,5 +1,11 @@
 ---
 
+# Backports includes (newer versions of) Ansible, letsencrypt, Docker, sysdig, tmux, Nginx, HAProxy, tcpdump, tshark, etc.
+- name: Add Jessie backports Apt repo
+  copy:
+    src: files/etc/apt/sources.list.d/jessie-backports.list
+    dest: /etc/apt/sources.list.d/jessie-backports.list
+
 - name: Update apt
   apt:
     update_cache: yes
