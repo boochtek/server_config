@@ -1,1 +1,26 @@
 ---
+
+- name: Install Nginx
+  apt:
+    name: "{{ item }}"
+  with_items:
+    - nginx
+    - nginx-doc
+
+- name: Set firewall rule for HTTP and HTTPS
+  lineinfile:
+    dest: /etc/shorewall/rules
+    line: "ACCEPT net $FW tcp {{ item }}"
+  with_items:
+    - 80
+    - 443
+  notify:
+    - Restart Shorewall
+
+- name: Configure Nginx to not display version numbers
+  copy:
+    src: files/etc/nginx/conf.d/hide_versions.conf
+    dest: /etc/nginx/conf.d/hide_versions.conf
+  notify:
+    - Check Nginx configuation
+    - Reload Nginx

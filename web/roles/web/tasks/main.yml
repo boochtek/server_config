@@ -1,8 +1,11 @@
 ---
 
 - debug:
-    msg: Web
+    msg: Web server configuration
 
 - include: haproxy.yml
+  tags: haproxy
 - include: nginx.yml
+  tags: nginx
 - include: dokuwiki.yml
+  tags: dokuwiki

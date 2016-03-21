@@ -16,9 +16,14 @@
         * What's the difference between that and LMTP?
     * STARTTLS
         * What do we do about SSL certificates? Will letsencrypt work?
-* Nginx
-    * Don't forget to open the firewall
+* Nginx fixes
+    * Add 404 and 50x error pages
     * Install and configure TLS and letsencrypt
+        * Include redirect from HTTP to HTTPS
+    * Configure to run in a chroot jail, if we can
+    * Figure out where to put log files
+    * Rotate log files daily (for privacy of users)
+        * Gather web stats before we rotate log files
 * Dokuwiki
     * Make sure to require logins to edit
 * Middleman or Hugo
