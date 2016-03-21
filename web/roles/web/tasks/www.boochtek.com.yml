@@ -1,0 +1,29 @@
+---
+
+- name: Create directory for www.boochtek.com
+  file:
+    path: /var/www/www.boochtek.com
+    state: directory
+    mode: 0770
+    owner: www-data
+    group: www-data
+
+- name: Copy www.boochtek.com content from GitHub
+  git:
+    dest: /var/www/www.boochtek.com/public
+    repo: https://github.com/boochtek/boochtek.com.git
+  become_user: booch
+
+- name: Create Nginx site config for www.boochtek.com
+  copy:
+    src: files/etc/nginx/sites-available/www.boochtek.com.conf
+    dest: /etc/nginx/sites-available/www.boochtek.com.conf
+
+- name: Include www.boochtek.com site in Nginx config
+  file:
+    path: /etc/nginx/sites-enabled/www.boochtek.com.conf
+    src: /etc/nginx/sites-available/www.boochtek.com.conf
+    state: link
+  notify:
+    - Check Nginx configuation
+    - Reload Nginx

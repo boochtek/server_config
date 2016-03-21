@@ -9,3 +9,6 @@
   tags: nginx
 - include: dokuwiki.yml
   tags: dokuwiki
+
+- include: www.boochtek.com.yml
+  tags: boochtek
