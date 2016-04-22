@@ -19,7 +19,7 @@
   user:
     name: booch
     comment: Craig Buchek
-    groups: sudo,www-data
+    groups: sudo,www-data,staff
     append: yes # Append the above groups to the default set of groups.
     password: "$6$rounds=1000000$2A1oHVyHQlc$QnP8ctjTg/LIifYXUXg0zMWF0bMIwYl5hNKiF3pqFW1dEUkyvxMBj2KNzeoabcAumeJRl9cbp7Vgb0kNyJ4rM/"
     update_password: on_create # Don't override the password if the user has changed it.

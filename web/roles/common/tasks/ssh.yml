@@ -59,11 +59,11 @@
   notify:
     - Reload SSHD config
 
-# NOTE: Be sure you've added all your users to one of the specified groups.
-- name: Only allow "real" users to log in via SSH
+# NOTE: Be sure you've added all your users to the specified group.
+- name: Only allow "staff" members to log in via SSH
   lineinfile:
     dest: /etc/ssh/sshd_config
-    line: AllowGroups users
+    line: AllowGroups staff
     regexp: '^#?AllowGroups\s+'
   notify:
     - Reload SSHD config
