@@ -1,0 +1,50 @@
+---
+
+# NOTE: You'll need to define all these variables when including this file:
+#           * name: Name of the package (for display purposes)
+#           * src: URL of the source tarball
+#           * tarball: A name for the downloaded tarball
+#           * dir: A name for the directory to unpack the tarball to
+#           * skip_make_build: True if you want to run `make install` without `make`
+#           * creates: A file created by the install process; if it exists, the installation will be skipped
+
+- name: "Check if {{ name }} is installed"
+  stat:
+    path: "{{ creates }}"
+  register: package_installed
+
+- name: "Download the {{ name }} tarball"
+  get_url:
+    url: "{{ src }}"
+    dest: "/tmp/{{ tarball }}"
+  when: package_installed.stat.exists != True
+
+- name: "Unpack the {{ name }} tarball"
+  unarchive:
+    src: "/tmp/{{ tarball }}"
+    dest: "/tmp"
+    copy: no
+  when: package_installed.stat.exists != True
+
+- name: "Build the {{ name }} package"
+  command: make
+  args:
+    chdir: "/tmp/{{ dir }}"
+  when: ( package_installed.stat.exists != True ) and (skip_make_build != True)
+
+- name: "Install the {{ name }} package"
+  command: make install
+  args:
+    chdir: "/tmp/{{ dir }}"
+  when: package_installed.stat.exists != True
+  become: True
+
+- name: "Delete the unpacked {{ name }} tarball"
+  file:
+    path: "/tmp/{{ dir }}"
+    state: absent
+
+- name: "Delete the {{ name }} tarball"
+  file:
+    path: "/tmp/{{ tarball }}"
+    state: absent

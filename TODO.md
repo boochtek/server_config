@@ -41,7 +41,6 @@
     * Boochtek blog
     * Personal blog
     * Personal site
-* Jenkins
 * GitLab
     * Private config files
 * Local email delivery

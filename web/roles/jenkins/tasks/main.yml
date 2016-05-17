@@ -1,4 +1,6 @@
 ---
 
-- debug:
-    msg: Jenkins
+- include: jenkins.yml
+- include: plugins.yml
+- include: webkit.yml
+- include: ruby.yml

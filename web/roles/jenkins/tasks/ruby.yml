@@ -1,0 +1,57 @@
+---
+
+- name: Install prerequisites for Ruby
+  apt:
+    package: "{{ item }}"
+  with_items:
+    - build-essential
+    - openssl
+    - libreadline6
+    - zlib1g
+    - libssl-dev
+    - libreadline6-dev
+    - zlib1g-dev
+    - libyaml-dev
+    - libxml2-dev
+    - libxslt-dev
+    - libc6-dev
+    - ncurses-dev
+
+- name: Install chruby
+  include: tarball_install.yml
+  vars:
+    name: chruby
+    src: "https://github.com/postmodern/chruby/archive/v{{ chruby_version }}.tar.gz"
+    dir: "chruby-{{ chruby_version }}"
+    tarball: "chruby-{{ chruby_version }}.tar.gz"
+    skip_make_build: True
+    creates: /usr/local/share/chruby/chruby.sh
+
+- name: Install ruby-install
+  include: tarball_install.yml
+  vars:
+    name: ruby-install
+    src: "https://github.com/postmodern/ruby-install/archive/v{{ ruby_install_version }}.tar.gz"
+    dir: "ruby-install-{{ ruby_install_version }}"
+    tarball: "ruby-install-{{ ruby_install_version }}.tar.gz"
+    skip_make_build: True
+    creates: /usr/local/bin/ruby-install
+
+# NOTE: It will take several minutes to compile each version of Ruby.
+- name: Install Ruby
+  command: "ruby-install -i {{ rubies_dir }}/ruby-{{ item }} ruby {{ item }}"
+  args:
+    creates: "{{ rubies_dir }}/ruby-{{ item }}"
+  with_items: "{{ ruby_versions }}"
+
+- name: Ensure chruby is available on login
+  copy:
+    src: files/etc/profile.d/chruby.sh
+    dest: /etc/profile.d/chruby.sh
+    mode: 0755
+
+- name: Ensure bundled gems are installed locally to each app
+  copy:
+    src: files/etc/profile.d/bundle_path.sh
+    dest: /etc/profile.d/bundle_path.sh
+    mode: 0755

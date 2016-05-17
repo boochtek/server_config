@@ -1,0 +1,40 @@
+---
+
+- name: Add Jenkins repository key
+  apt_key:
+    url: http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key
+
+- name: Add Jenkins repository
+  apt_repository:
+    repo: "deb http://pkg.jenkins-ci.org/debian binary/"
+    update_cache: yes
+
+- name: Install Jenkins
+  apt:
+    name: jenkins
+    state: installed
+
+# TODO: This should be a handler.
+- name: Ensure Jenkins starts on boot
+  service:
+    name: jenkins
+    state: started
+    enabled: yes
+
+# Stole this from https://github.com/geerlingguy/ansible-role-jenkins/blob/master/tasks/main.yml
+- name: Wait for Jenkins to start up before proceeding
+  shell: "curl -D - --silent http://{{ jenkins_hostname }}:{{ jenkins_http_port }}{{ jenkins_url_prefix }}/cli/"
+  register: result
+  until: (result.stdout.find("403 Forbidden") != -1) or (result.stdout.find("200 OK") != -1) and (result.stdout.find("Please wait while") == -1)
+  retries: 60
+  delay: 5
+  changed_when: false
+
+- name: Get the jenkins-cli jarfile from the Jenkins server.
+  get_url:
+    url: "http://{{ jenkins_hostname }}:{{ jenkins_http_port }}{{ jenkins_url_prefix }}/jnlpJars/jenkins-cli.jar"
+    dest: "{{ jenkins_jar_location }}"
+  register: jarfile_get
+  until: "'OK' in jarfile_get.msg or 'file already exists' in jarfile_get.msg"
+  retries: 5
+  delay: 10

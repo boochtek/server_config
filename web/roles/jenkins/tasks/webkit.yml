@@ -1,0 +1,11 @@
+---
+
+# Install Qt WebKit dev package, so the Capybara-WebKit gem can be built.
+
+- name: Intall Qt WebKit
+  apt:
+    name: libqtwebkit-dev
+
+- name: Install X11 virtual framebuffer
+  apt:
+    name: xvfb
