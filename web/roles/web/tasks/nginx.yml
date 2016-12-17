@@ -3,6 +3,7 @@
 - name: Install Nginx
   apt:
     name: "{{ item }}"
+    default_release: jessie-backports
   with_items:
     - nginx
     - nginx-doc
