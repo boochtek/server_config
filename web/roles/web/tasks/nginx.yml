@@ -18,10 +18,10 @@
   notify:
     - Restart Shorewall
 
-- name: Configure Nginx to not display version numbers
+- name: Configure Nginx
   copy:
-    src: files/etc/nginx/conf.d/hide_versions.conf
-    dest: /etc/nginx/conf.d/hide_versions.conf
+    src: files/etc/nginx/conf.d/
+    dest: /etc/nginx/conf.d/
   notify:
     - Check Nginx configuation
     - Reload Nginx
