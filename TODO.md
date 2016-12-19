@@ -1,8 +1,46 @@
+* Nginx fixes
+    * Make sure it works when building a server from scratch
+    * Make sure it starts on boot
+    * Move configuration items into snippets or conf
+        * Redirect to HTTPS canonical
+        * Let's Encrypt ACME access
+        * Error pages
+        * GZip
+        * Logs
+        * MIME types and default Content-Type
+        * TCP and keepalive settings
+        * Let's Encrypt SSL certificate paths
+    * Test against SSL Labs
+    * Add 404 and 50x error pages
+    * Configure to run in a chroot jail, if we can
+    * Figure out where to put log files
+    * Rotate log files daily (for privacy of users)
+        * Gather web stats before we rotate log files
+    * Enable HTTP/2
+    * Compile NAXSI module
+        * Enable some security filtering
+* Install WordPress (4.6.1) from jessie-backports
+    * It wants to install Apache packages though
+        * And PHP, obviously
+* Dokuwiki
+    * Version included in Debian Jessie is old (20140505)
+        * No newer version available in jessie-backports
+        * Install by hand
+    * Could we just convert everything (including history) to Middleman or Hugo?
+    * Make sure to require logins to edit anything
+* Move all web sites over
+    * BoochTek wiki
+    * BoochTek blog
+    * Personal blog
+    * Personal site
+* Delete sites from old server
+    * BoochTek site
 * Disable RPC ports
 * Configure root emails to get forwarded somewhere useful
 * Stuff from http://wiki.boochtek.com/build/misc
 * Backups
 * Monitoring
+* Fail2ban
 * Check log rotation
 * Web metrics
 * Ansible stuff
@@ -23,29 +61,13 @@
     * STARTTLS
         * What do we do about SSL certificates? Will letsencrypt work?
         * Could we use HAProxy or Nginx in front of Postfix to do TLS?
-* Nginx fixes
-    * Add 404 and 50x error pages
-    * Install and configure TLS and letsencrypt
-        * Include redirect from HTTP to HTTPS
-    * Configure to run in a chroot jail, if we can
-    * Figure out where to put log files
-    * Rotate log files daily (for privacy of users)
-        * Gather web stats before we rotate log files
-* Dokuwiki
-    * Could we just convert everything (including history) to Middleman or Hugo?
-    * Make sure to require logins to edit anything
 * Middleman or Hugo
-* Move all web sites over
-    * Boochtek
-    * Boochtek wiki
-    * Boochtek blog
-    * Personal blog
-    * Personal site
 * GitLab
     * Private config files
 * Local email delivery
     * Use maildir format
 * IMAPD
+    * Can get newer Dovecot and SpamAssassin from jessie-backports
 * Receive emails through Postfix
     * Don't forget to bind to 0.0.0.0
     * Don't forget to open the firewall
@@ -57,3 +79,5 @@
 * Test server configs using ServerSpec
 * iTunes server
 * Replace NTP server with openntpd?
+* Webmail
+    * Can get newer roundcube from jessie-backports
