@@ -1,17 +1,8 @@
 * Nginx fixes
     * Make sure it works when building a server from scratch
     * Make sure it starts on boot
-    * Move configuration items into snippets or conf
-        * Redirect to HTTPS canonical
-        * Let's Encrypt ACME access
-        * Error pages
-        * GZip
-        * Logs
-        * MIME types and default Content-Type
-        * TCP and keepalive settings
-        * Let's Encrypt SSL certificate paths
     * Test against SSL Labs
-    * Add 404 and 50x error pages
+    * Add custom 404 and 50x error pages
     * Configure to run in a chroot jail, if we can
     * Figure out where to put log files
     * Rotate log files daily (for privacy of users)

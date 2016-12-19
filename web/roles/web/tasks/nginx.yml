@@ -80,6 +80,14 @@
     - Check Nginx configuration
     - Reload Nginx
 
+- name: Include Nginx snippets
+  copy:
+    src: files/etc/nginx/snippets/
+    dest: /etc/nginx/snippets/
+  notify:
+    - Check Nginx configuration
+    - Reload Nginx
+
 - name: Create TLS certificates via Let's Encrypt and certbot
   command: certbot certonly -n --agree-tos --email 'craig@boochtek.com' --keep --webroot -w /var/www/{{ item.site }}/public -d {{ item.domains }}
   args:
