@@ -1,12 +1,27 @@
 ---
 
+- name: Add key for Nginx Apt repo
+  apt_key:
+    url: http://nginx.org/keys/nginx_signing.key
+
+- name: Add Nginx Apt repo
+  copy:
+    src: files/etc/apt/sources.list.d/nginx.list
+    dest: /etc/apt/sources.list.d/nginx.list
+  notify:
+    - Update Apt cache
+
 - name: Install Nginx
   apt:
     name: "{{ item }}"
-    default_release: jessie-backports
   with_items:
     - nginx
     - nginx-doc
+
+- name: Install Nginx service file for SystemD
+  copy:
+    src: lib/systemd/system/nginx.service
+    dest: /lib/systemd/system/nginx.service
 
 - name: Install Let's Encrypt and certbot
   apt:
@@ -34,12 +49,35 @@
   args:
     creates: /etc/ssl/certs/dhparam.pem
 
+# Copy some settings from Debian's Nginx configuration.
+- name: Configure Nginx defaults
+  copy:
+    src: files/etc/nginx/nginx.conf
+    dest: /etc/nginx/nginx.conf
+  notify:
+    - Check Nginx configuration
+    - Reload Nginx
+
+- name: Remove default Nginx site
+  file:
+    path: /etc/nginx/conf.d/default.conf
+    state: absent
+
+- name: Create Nginx configuration directories
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - /etc/nginx/sites-available
+    - /etc/nginx/sites-enabled
+    - /etc/nginx/snippets
+
 - name: Configure Nginx
   copy:
     src: files/etc/nginx/conf.d/
     dest: /etc/nginx/conf.d/
   notify:
-    - Check Nginx configuation
+    - Check Nginx configuration
     - Reload Nginx
 
 - name: Create TLS certificates via Let's Encrypt and certbot

@@ -1,6 +1,10 @@
 ---
 
-- name: Check Nginx configuation
+- name: Update Apt cache
+  apt:
+    update_cache: yes
+
+- name: Check Nginx configuration
   command: nginx -t
   notify:
     - Reload Nginx
@@ -9,3 +13,4 @@
   service:
     name: nginx
     state: reloaded
+    enabled: yes
