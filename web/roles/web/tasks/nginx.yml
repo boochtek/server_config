@@ -8,6 +8,16 @@
     - nginx
     - nginx-doc
 
+- name: Install Let's Encrypt and certbot
+  apt:
+    name: "{{ item }}"
+    default_release: jessie-backports
+  with_items:
+    - letsencrypt
+    - certbot
+    - python-certbot-doc
+    - python-acme-doc
+
 - name: Set firewall rule for HTTP and HTTPS
   lineinfile:
     dest: /etc/shorewall/rules
@@ -18,6 +28,12 @@
   notify:
     - Restart Shorewall
 
+# This will take several minutes on an x86_64 server; several hours on a Raspberry Pi.
+- name: Generate a 4096-bit Diffie-Hillman key
+  command: openssl dhparam -out /etc/ssl/certs/dhparam.pem 4096
+  args:
+    creates: /etc/ssl/certs/dhparam.pem
+
 - name: Configure Nginx
   copy:
     src: files/etc/nginx/conf.d/
@@ -25,3 +41,10 @@
   notify:
     - Check Nginx configuation
     - Reload Nginx
+
+- name: Create TLS certificates via Let's Encrypt and certbot
+  command: certbot certonly -n --agree-tos --email 'craig@boochtek.com' --keep --webroot -w /var/www/{{ item.site }}/public -d {{ item.domains }}
+  args:
+    creates: /etc/letsencrypt/live/{{ item.site }}/cert.pem
+  with_items:
+    - { site: www.boochtek.com, domains: "www.boochtek.com,boochtek.com" }
