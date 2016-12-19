@@ -7,7 +7,9 @@
     * Figure out where to put log files
     * Rotate log files daily (for privacy of users)
         * Gather web stats before we rotate log files
-    * Enable HTTP/2
+    * Enable HTTP/2 for Chrome
+        * ALPN support will require compiling Nginx by hand against OpenSSL 1.0.2 or newer
+        * Firefox works out of the box, using NPN
     * Compile NAXSI module
         * Enable some security filtering
 * Install WordPress (4.6.1) from jessie-backports
