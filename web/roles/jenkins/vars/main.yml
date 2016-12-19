@@ -1,3 +1,9 @@
 ---
 
-- include: ruby.yml
+rubies_dir: /var/lib/jenkins/.rubies
+
+ruby_versions:
+  - 2.3.1
+
+chruby_version: 0.3.9
+ruby_install_version: 0.6.0
