@@ -1,17 +1,3 @@
-* Nginx fixes
-    * Make sure it works when building a server from scratch
-    * Make sure it starts on boot
-    * Test against SSL Labs
-    * Add custom 404 and 50x error pages
-    * Configure to run in a chroot jail, if we can
-    * Figure out where to put log files
-    * Rotate log files daily (for privacy of users)
-        * Gather web stats before we rotate log files
-    * Enable HTTP/2 for Chrome
-        * ALPN support will require compiling Nginx by hand against OpenSSL 1.0.2 or newer
-        * Firefox works out of the box, using NPN
-    * Compile NAXSI module
-        * Enable some security filtering
 * Install WordPress (4.6.1) from jessie-backports
     * It wants to install Apache packages though
         * And PHP, obviously
@@ -27,7 +13,6 @@
     * Personal blog
     * Personal site
 * Delete sites from old server
-    * BoochTek site
 * Disable RPC ports
 * Configure root emails to get forwarded somewhere useful
 * Stuff from http://wiki.boochtek.com/build/misc
@@ -74,3 +59,17 @@
 * Replace NTP server with openntpd?
 * Webmail
     * Can get newer roundcube from jessie-backports
+* Nginx fixes
+    * Make sure it works when building a server from scratch
+    * Make sure it starts on boot
+    * Test against SSL Labs
+    * Add custom 404 and 50x error pages
+    * Configure to run in a chroot jail, if we can
+    * Figure out where to put log files
+    * Rotate log files daily (for privacy of users)
+        * Gather web stats before we rotate log files
+    * Enable HTTP/2 for Chrome
+        * ALPN support will require compiling Nginx by hand against OpenSSL 1.0.2 or newer
+        * Firefox works out of the box, using NPN
+    * Compile NAXSI and/or mod_security module
+        * Enable some security filtering
