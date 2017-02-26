@@ -71,7 +71,7 @@
     - Reload Nginx
 
 - name: Create TLS certificates via Let's Encrypt and certbot
-  command: certbot certonly -n --agree-tos --email 'craig@boochtek.com' --keep --webroot -w /var/www/{{ item.site }}/public -d {{ item.domains }}
+  command: certbot certonly -n --agree-tos --email 'craig@boochtek.com' --keep --webroot -w /var/www/{{ item.site }}/public -d {{ item.domains }} --renew-hook 'systemctl reload nginx'
   args:
     creates: /etc/letsencrypt/live/{{ item.site }}/cert.pem
   with_items:
