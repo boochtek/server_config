@@ -68,8 +68,5 @@
     * Figure out where to put log files
     * Rotate log files daily (for privacy of users)
         * Gather web stats before we rotate log files
-    * Enable HTTP/2 for Chrome
-        * ALPN support will require compiling Nginx by hand against OpenSSL 1.0.2 or newer
-        * Firefox works out of the box, using NPN
     * Compile NAXSI and/or mod_security module
         * Enable some security filtering

@@ -1,19 +1,22 @@
 ---
 
-- name: Add key for Nginx Apt repo
+- name: Remove key for Nginx Apt repo
   apt_key:
     url: http://nginx.org/keys/nginx_signing.key
+    id: "7BD9BF62"
+    state: absent
 
-- name: Add Nginx Apt repo
-  copy:
-    src: files/etc/apt/sources.list.d/nginx.list
-    dest: /etc/apt/sources.list.d/nginx.list
+- name: Remove Nginx Apt repo
+  file:
+    path: /etc/apt/sources.list.d/nginx.list
+    state: absent
   notify:
     - Update Apt cache
 
 - name: Install Nginx
   apt:
     name: "{{ item }}"
+    default_release: jessie-backports
   with_items:
     - nginx
     - nginx-doc
