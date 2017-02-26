@@ -52,6 +52,11 @@
         * SpamAssassin
         * ClamAV
     * Add greylisting
+    * Add SPF records
+        * DNSimple supports SPF records
+        * SPF records are deprecated, but the TXT record variant is still viable
+    * Add DMARC records
+        * May require setting up SPF and DKIM
 * What else can we learn from https://github.com/debops?
 * Test server configs using ServerSpec
 * iTunes server
@@ -62,6 +67,8 @@
     * Make sure it works when building a server from scratch
     * Make sure it starts on boot
     * Test against SSL Labs
+        * Only thing we're missing is DNS Certification Authority Authorization
+            * DNSimple supports CAA records
     * Add custom 404 and 50x error pages
     * Configure to run in a chroot jail, if we can
     * Figure out where to put log files
@@ -69,3 +76,8 @@
         * Gather web stats before we rotate log files
     * Compile NAXSI and/or mod_security module
         * Enable some security filtering
+* CASino for authentication.
+* Something that uses CASino.
+    * Retro temperature metrics
+        * Try with and without a proxy in front.
+        * Proxy to make it appear as 1 app.
