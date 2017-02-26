@@ -15,7 +15,6 @@
 * Delete sites from old server
 * Disable RPC ports
 * Configure root emails to get forwarded somewhere useful
-* Stuff from http://wiki.boochtek.com/build/misc
 * Backups
 * Monitoring
 * Fail2ban

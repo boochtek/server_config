@@ -1,0 +1,23 @@
+---
+
+- name: Install revision control tools
+  apt:
+    name:
+      - cvs
+      - subversion
+      - subversion-tools
+      - git-core
+      - git-doc
+      - git-svn
+
+- name: Install Perl 5
+  apt:
+    name:
+      - perl
+      - perl-modules
+      - perl-doc
+
+- name: Install Python
+  apt:
+    name:
+      - python

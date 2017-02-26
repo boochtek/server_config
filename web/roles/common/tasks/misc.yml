@@ -1,1 +1,142 @@
 ---
+
+- name: Install system tools
+  apt:
+    name:
+      - lsb-release     # Allows us to easily determine what distro we're running (lsb_release -a)
+      - chkconfig       # Set up links in /etc/rc*.d directories, based on special comments in the startup scripts
+      - sysvinit-utils  # Primarily for the `service` command
+      - sysv-rc-conf    # Provides a TUI-based utility to configure init files for various runlevels
+      - mlocate         # The `locate` program is great for finding files on the system; unlike `find`, it's cached
+      - locales         # Resolves some issues with Perl complaining about LC_ALL/LANG/LANGUAGE when using en_US.UTF-8 encoding
+      - locales-all
+      - mime-support
+      - psmisc          # Includes `pstree`, `killall`, and `fuser`
+      - lsof            # Lists files (and sockets) that are open, and which processes are using them
+      - htop            # An enhanced version of `top`
+      - iotop           # Allows you to monitor I/O with an interface similar to `top`
+      - strace          # Trace all the system calls that a program makes
+      - ltrace          # Trace all the library calls that a program makes
+      - sysstat         # Includes `sar`, `iostat`, and `mpstat`, used to more closely monitor system performance
+      - checkinstall    # Intall packages from sources, keeping installation info in the packaging system for easy removal
+
+# TODO: Enable `sa1` to run from cron; need to edit /etc/default/sysstat to enable that.
+
+- name: Update locate database
+  command: /etc/cron.daily/mlocate
+  args:
+    creates: /var/lib/mlocate/mlocate.db
+
+- name: Install shells
+  apt:
+    name:
+      - zsh
+      - zsh-doc
+      - csh
+      - tcsh
+      - ksh
+
+- name: Install text editors and pagers
+  apt:
+    name:
+      - less
+      - vim
+      - vim-doc
+      - nano
+      - pinfo
+
+- name: Install newer version of OpenSSL
+  apt:
+    name: openssl
+    default_release: jessie-backports
+
+- name: Install security tools
+  apt:
+    name:
+      - ssl-cert
+      - ca-certificates
+      - gnupg           # GNU Privacy Guard is a clone of PGP
+
+- name: Install packaging and compression tools
+  apt:
+    name:
+      - bzip2
+      - unzip
+      - zip
+
+- name: Install web tools
+  apt:
+    name:
+      - curl
+      - wget
+      - links
+      - lynx-cur        # Newer release of lynx
+      - elinks
+      - elinks-doc
+      - w3m
+      - rsync
+      - tidy
+      - tidy-doc
+      - ncftp           # Nice TUI for FTP, with bookmarks
+      - lftp            # Nice for syncing over FTP
+
+- name: Install email clients
+  apt:
+    name:
+      - mailutils       # The GNU `mail` command supports Maildir and IMAP; also includes `movemail` and `sieve`
+      - mutt
+
+- name: Install network tools
+  apt:
+    name:
+      - tcpdump
+      - telnet          # Client only; used for testing TCP connections
+      - mtr-tiny        # Enhanced version of traceroute; tiny version does not require X11
+      - lrzsz           # ZModem is still handy every once in a while; use the `rz` command to receive
+
+- name: Install some other common tools
+  apt:
+    name:
+      - ack-grep        # Nice replacement for `grep -R`; does the "right thing" in many ways – ignores non-text files, backup files, SVN/GIT repos, etc.
+      - mc              # Midnight Commander TUI-based file manager; comes in handy on occasion
+      - tree
+      - bc              # Calculator for doing simple math (recommend always using `-l` option)
+      - at              # Deferred execution scheduler to supplement cron
+
+- name: Create local man page directories
+  file:
+    path: /usr/local/share/man/{{ item }}
+    state: directory
+  with_items:
+    - man1
+    - man2
+    - man3
+    - man4
+    - man5
+    - man6
+    - man7
+    - man8
+    - man9
+
+- name: Allow us to use `ack-grep` as just `ack`
+  file:
+    src: "{{ item.source }}"
+    dest: "{{ item.dest }}"
+    state: link
+  with_items:
+    - { source: /usr/bin/ack-grep , dest: /usr/local/bin/ack}
+    - { source: /usr/share/man/man1/ack-grep.1p.gz, dest: /usr/local/share/man/man1/ack.1p.gz}
+
+- name: Install auto-logout mechanisms
+  copy:
+    src: files/{{ item }}
+    dest: "{{ item }}"
+    mode: 0755
+  with_items:
+    - /etc/profile.d/autologout.sh
+    - /etc/profile.d/autologout.csh
+
+- name: Install documentation
+  apt:
+    name:
+      - doc-base
