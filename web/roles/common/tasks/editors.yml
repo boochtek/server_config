@@ -1,0 +1,25 @@
+---
+
+# Everyone has their preferred text editor.
+# For our servers, we ensure that `nano` and `vim` are available.
+
+- name: Install nano
+  apt:
+    name: nano
+
+- name: Install vim
+  apt:
+    name: "{{ item }}"
+  with_items:
+    - vim
+    - vim-doc
+
+# We've probably got `less` installed aready, but we want to be sure.
+- name: Install less
+  apt:
+    name: less
+
+# This is an alternate browser for reading `info` documentation.
+- name: Install pinfo
+  apt:
+    name: pinfo

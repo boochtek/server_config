@@ -1,0 +1,62 @@
+---
+
+# We've probably got `curl` installed aready, but we want to be sure.
+- name: Install curl
+  apt:
+    name: curl
+
+- name: Install alternate console-based browsers
+  apt:
+    name: "{{ item }}"
+  with_items:
+    - links
+    - lynx-cur
+    - elinks
+    - elinks-doc
+    - w3m
+
+- name: Install various FTP clients
+  apt:
+    name: "{{ item }}"
+  with_items:
+    - ncftp
+    - lftp
+
+- name: Install rsync
+  apt:
+    name: rsync
+
+# Tcpdump is a good tool for monitoring packets going across the wire.
+# It's helpful when troubleshooting network protocol issues.
+- name: Install tcpdump
+  apt:
+    name: tcpdump
+
+# Telnet is no longer good for connecting to remote systems to get shell access.
+# (Always use SSH for remote shell access.)
+# However, it's good for connecting to other ports to test network connectivity.
+# (For example, it's the easiest way to test low-level SMTP functionality.)
+- name: Install telnet client
+  apt:
+    name: telnet
+
+# The `mtr` program is an enhanced version of `traceroute`, with some additional features.
+# We want the "tiny" variant, which does not require X11.
+- name: Install mtr
+  apt:
+    name: mtr-tiny
+
+# ZModem isn't used much any more, but it can be used to send files across an existing SSH (or any other pty) connection.
+# The `lrzsz` package supports ZModem – use the `rz` command to receive a file.
+# KDE's Konsole provides good ZModem upload support.
+- name: Install lrzsz
+  apt:
+    name: lrzsz
+
+# Install a couple email clients, for those who like to read email via a TUI.
+- name: Install various email clients
+  apt:
+    name: "{{ item }}"
+  with_items:
+    - mutt
+    - nmh

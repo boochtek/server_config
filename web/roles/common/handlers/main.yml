@@ -25,3 +25,11 @@
 
 - name: Generate Postfix mynetworks database
   command: postmap /etc/postfix/mynetworks
+
+# Use `at` to kick off `locate` database generation, but don't care about letting it finish.
+# Thanks to http://www.linuxnix.com/ansible-run-commands-in-background-in-playbooks/ for this technique.
+- name: Generate locate database immediately
+  at:
+    command: /etc/cron.daily/mlocate
+    count: 1
+    units: minutes

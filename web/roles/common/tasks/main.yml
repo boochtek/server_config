@@ -15,13 +15,21 @@
   tags: ssh
 - include: ntp.yml
   tags: ntp
+- include: revision-control.yml
+  tags: revision-control
+- include: dev-tools.yml
+  tags: dev-tools
 - include: postfix.yml
   tags: postfix
 - include: dns.yml
   tags: dns
+- include: editors.yml
+  tags: editors
 - include: misc.yml
   tags: misc
 - include: dev-tools.yml
   tags: dev-tools
+- include: network-tools.yml
+  tags: network-tools
 - include: monitoring.yml
   tags: monitoring

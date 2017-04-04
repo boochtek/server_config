@@ -1,0 +1,26 @@
+---
+
+- name: Install Git
+  apt:
+    name: "{{ item }}"
+  with_items:
+    - git-core
+    - git-doc
+
+- name: Install CVS
+  apt:
+    name: cvs
+
+- name: Install Subversion
+  apt:
+    name: "{{ item }}"
+  with_items:
+    - subversion
+    - subversion-tools
+    - git-svn
+
+- name: Add to list of Subversion global ignore patterns
+  lineinfile:
+    dest: /etc/subversion/config
+    line: "global-ignores = *.o *.lo *.la #*# .*.rej *.rej .*~ *~ .#* .DS_Store"
+    regexp: '^#*\s*global-ignores.*$'

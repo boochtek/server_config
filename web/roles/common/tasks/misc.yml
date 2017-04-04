@@ -1,69 +1,5 @@
 ---
 
-- name: Install system tools
-  apt:
-    name:
-      - lsb-release     # Allows us to easily determine what distro we're running (lsb_release -a)
-      - chkconfig       # Set up links in /etc/rc*.d directories, based on special comments in the startup scripts
-      - sysvinit-utils  # Primarily for the `service` command
-      - sysv-rc-conf    # Provides a TUI-based utility to configure init files for various runlevels
-      - mlocate         # The `locate` program is great for finding files on the system; unlike `find`, it's cached
-      - locales         # Resolves some issues with Perl complaining about LC_ALL/LANG/LANGUAGE when using en_US.UTF-8 encoding
-      - locales-all
-      - mime-support
-      - psmisc          # Includes `pstree`, `killall`, and `fuser`
-      - lsof            # Lists files (and sockets) that are open, and which processes are using them
-      - htop            # An enhanced version of `top`
-      - iotop           # Allows you to monitor I/O with an interface similar to `top`
-      - strace          # Trace all the system calls that a program makes
-      - ltrace          # Trace all the library calls that a program makes
-      - sysstat         # Includes `sar`, `iostat`, and `mpstat`, used to more closely monitor system performance
-      - checkinstall    # Intall packages from sources, keeping installation info in the packaging system for easy removal
-
-# TODO: Enable `sa1` to run from cron; need to edit /etc/default/sysstat to enable that.
-
-- name: Update locate database
-  command: /etc/cron.daily/mlocate
-  args:
-    creates: /var/lib/mlocate/mlocate.db
-
-- name: Install shells
-  apt:
-    name:
-      - zsh
-      - zsh-doc
-      - csh
-      - tcsh
-      - ksh
-
-- name: Install text editors and pagers
-  apt:
-    name:
-      - less
-      - vim
-      - vim-doc
-      - nano
-      - pinfo
-
-- name: Install newer version of OpenSSL
-  apt:
-    name: openssl
-    default_release: jessie-backports
-
-- name: Install security tools
-  apt:
-    name:
-      - ssl-cert
-      - ca-certificates
-      - gnupg           # GNU Privacy Guard is a clone of PGP
-
-- name: Install packaging and compression tools
-  apt:
-    name:
-      - bzip2
-      - unzip
-      - zip
-
 - name: Install web tools
   apt:
     name:
@@ -98,9 +34,6 @@
   apt:
     name:
       - ack-grep        # Nice replacement for `grep -R`; does the "right thing" in many ways – ignores non-text files, backup files, SVN/GIT repos, etc.
-      - mc              # Midnight Commander TUI-based file manager; comes in handy on occasion
-      - tree
-      - bc              # Calculator for doing simple math (recommend always using `-l` option)
       - at              # Deferred execution scheduler to supplement cron
 
 - name: Create local man page directories
@@ -140,3 +73,170 @@
   apt:
     name:
       - doc-base
+
+# The `chkconfig` command is used to set up the soft links in `/etc/rc*.d` directories,
+# based on special comments in the startup scripts.
+# The Debian `update-rc.d` command does the same thing as chkconfig,
+# but `chkconfig` is more standard across various distributions.
+- name: Install chkconfig
+  apt:
+    name: chkconfig
+
+# We prefer to use the `service` command, which provides a simple way to stop and start services.
+# It's the same as running the startup scripts in `/etc/init.d` manually,
+# but with a nicer interface (and better command-line completion).
+# Using `service` is now the preferred way to start and stop services in most Linux distros, including RHEL.
+# Debian includes the `service` command in the sysvinit-utils package.
+# In Debian prior to 6.0, the `service` command was in the insserv package.
+- name: Install service command
+  apt:
+    name: sysvinit-utils
+
+# The `lsb-release` package (including the `lsb_release` command) lets scripts determine
+# which version of which distro they're running on.
+- name: Install LSB release command
+  apt:
+    name: lsb-release
+
+# The `locate` program is great for finding files on the system,
+# without find having to search through a bunch of directories.
+# Debian 5.0 and newer prefers use of the `mlocate` variant.
+- name: Install locate
+  apt:
+    name: mlocate
+  notify:
+    - Generate locate database immediately
+
+# This resolves some issues with Perl complaining about `LC_ALL`/`LANG`/`LANGUAGE` when using `en_US.UTF-8` encoding.
+- name: Install all locales
+  apt:
+    name: "{{ item }}"
+  with_items:
+    - locales
+    - locales-all
+
+# This program provides a TUI-based utility to configure init files for various runlevels.
+- name: Install sysv-rc-conf
+  apt:
+    name: sysv-rc-conf
+
+# This package is used by several web and email packages (Apache and PINE).
+- name: Install MIME support
+  apt:
+    name: mime-support
+
+# We'll need OpenSSL and certificate management packages for web and email later (Apache and Postfix).
+- name: Install OpenSSL and certificate management packages
+  apt:
+    name: "{{ item }}"
+    default_release: jessie-backports
+  with_items:
+    - openssl
+    - ssl-cert
+    - ca-certificates
+
+# The `psmisc` package includes some useful tools, including `pstree`, `killall`, and `fuser`.
+- name: Install psmisc
+  apt:
+    name: psmisc
+
+# The `lsof` program list files (and sockets) that are open, and which processes are using them.
+- name: Install lsof
+  apt:
+    name: lsof
+
+# The `htop` program is an enhanced version of `top`.
+- name: Install htop
+  apt:
+    name: htop
+
+# The `strace` program allows you to trace all the system calls that a program calls.
+# The `ltrace` program is similar, but traces library calls.
+- name: Install strace and ltrace
+  apt:
+    name: "{{ item }}"
+  with_items:
+    - strace
+    - ltrace
+
+# The `iotop` program allows you to monitor I/O with an interface similar to `top`.
+- name: Install iotop
+  apt:
+    name: iotop
+
+# The `sysstat` package includes `sar`, `iostat`, and `mpstat`,
+# programs used to more closely monitor system performance.
+# Note that we've not yet enabled `sa1` to run from cron;
+# We'll need to edit `/etc/default/sysstat` to enable that.
+- name: Install sysstat
+  apt:
+    name: sysstat
+
+# The `checkinstall` command lets you easily install packages from sources,
+# and keeps the installation info in the packaging system, so that it can be easily uninstalled.
+# To use it, you generally just build the software then run `sudo checkinstall make install`.
+- name: Install checkinstall
+  apt:
+    name: checkinstall
+
+# The `mail` command line utility is not installed by default,
+# causing several scripts that rely on it to fail.
+# Previously, we used the `mailx` variant, which is in the `bsd-mailx` package in Debian Squeeze (6.0).
+# For Debian Squeeze and newer, we chose to go with the GNU `mailutils` package instead.
+# It works with a wider range of mail sources, including Maildir folders, and even IMAP.
+# The package also includes the `movemail` command and
+# a sieve client for configuring mail filters over the SIEVE protocol.
+# NOTE: This should be run after installing Postfix; otherwise, it will force `exim4` to be installed.
+- name: Install mail command line utility
+  apt:
+    name: mailutils
+
+# Midnight Commander is a TUI-based file manager. It comes in handy on occasion.
+- name: Install Midnight Commander
+  apt:
+    name: mc
+
+- name: Install bzip2
+  apt:
+    name: bzip2
+
+- name: Install zip and unzip for ZIP files
+  apt:
+    name: "{{ item }}"
+  with_items:
+    - zip
+    - unzip
+
+# Install nearly every shell known to UNIX-kind.
+- name: Install various command shells
+  apt:
+    name: "{{ item }}"
+  with_items:
+    - bash
+    - ksh
+    - tcsh
+    - csh
+    - zsh
+    - zsh-doc
+    - fish
+    - mksh
+
+# GNU Privacy Guard is a clone of PGP.
+# The command-line utility is called `gpg` and the package is called `gnupg`.
+- name: Install GNU Privacy Guard
+  apt:
+    name: gnupg
+
+- name: Install base documentation
+  apt:
+    name: doc-base
+
+- name: Install tree
+  apt:
+    name: tree
+
+# The bc calculator is for doing simple math.
+# (It's recommended to always start it with the `-l` option.)
+- name: Install bc
+  apt:
+    name: bc

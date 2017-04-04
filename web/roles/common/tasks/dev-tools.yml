@@ -1,5 +1,22 @@
 ---
 
+# NOTE: There are a ton of -dev packages that we could install. Unless we find a development "super-package", we'll have to install them as-needed.
+
+- name: Create directories for man pages in /usr/local
+  file:
+    path: "/usr/local/share/man/{{ item }}"
+    mode: 0755
+    state: directory
+  with_items:
+    - man1
+    - man2
+    - man3
+    - man4
+    - man5
+    - man6
+    - man7
+    - man8
+
 - name: Install revision control tools
   apt:
     name:
@@ -10,6 +27,69 @@
       - git-doc
       - git-svn
 
+- name: Install essential build tools
+  apt:
+    name: "{{ item }}"
+  with_items:
+    - build-essential
+    - make
+    - autoconf
+    - automake
+    - autoconf-doc
+    - libtool
+    - libtool-doc
+    - flex
+    - bison
+    - m4
+    - gdb
+    - libc6-dev
+    - linux-kernel-headers
+
+- name: Install essential build tool documentation
+  apt:
+    name: "{{ item }}"
+  with_items:
+    - gnu-standards
+    - manpages-dev
+    - make-doc
+    - autoconf-doc
+    - libtool-doc
+    - bison-doc
+    - binutils-doc
+    - glibc-doc
+    - gcc-doc
+    - cpp-doc
+    - gdb-doc
+
+# Tidy is a command used to clean up formatting of HTML.
+# TODO: We'd prefer to get tidy 5.0+, so we can handle HTML 5.
+- name: Install tidy
+  apt:
+    name: tidy
+
+# The `ack` command is a nice replacement for recursive `grep`.
+# It does the "right thing" in many ways better than `grep` –
+# ignores non-text files, backup files, SVN/GIT repositories, etc.
+# For Debian 5.0+ systems, we can simply install the `ack-grep` package,
+# but we make a link to make it available as `ack`.
+- name: Install ack
+  apt:
+    name: ack-grep
+- name: Link ack, so we don't have to invoke it as ack-grep
+  file:
+    src: /usr/bin/ack-grep
+    dest: /usr/local/bin/ack
+    state: link
+- name: Link ack man page
+  file:
+    src: /usr/share/man/man1/ack-grep.1p.gz
+    dest: /usr/local/share/man/man1/ack.1p.gz
+    state: link
+
+- name: Install Python
+  apt:
+    name: python
+
 - name: Install Perl 5
   apt:
     name:
@@ -17,7 +97,3 @@
       - perl-modules
       - perl-doc
 
-- name: Install Python
-  apt:
-    name:
-      - python
