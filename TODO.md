@@ -16,10 +16,12 @@
 * Disable RPC ports
 * Configure root emails to get forwarded somewhere useful
 * Backups
+    * Copy most of tarsnap role from https://github.com/sovereign/sovereign
 * Monitoring
 * Fail2ban
 * Check log rotation
 * Web metrics
+* Try http://wallabag.org for saving web pages to read later
 * Ansible stuff
     * Use blockinfile in some places instead of lineinfile
         * Useful for when we want blank lines separating and comments
@@ -39,8 +41,22 @@
         * What do we do about SSL certificates? Will letsencrypt work?
         * Could we use HAProxy or Nginx in front of Postfix to do TLS?
 * Middleman or Hugo
+    * Picture gallery
+        * http://themes.gohugo.io/grid-side/#creating-a-gallery-image
+        * https://github.com/icecreammatt/hugo-gallery
+        * https://github.com/AmoebaLabs/middleman-image-gallery
+        * https://github.com/sowcow/middleman-galley
+* Move all web sites over
+    * Boochtek
+    * Boochtek wiki
+    * Boochtek blog
+    * Personal blog
+    * Personal site
 * GitLab
     * Private config files
+* Email
+    * Copy most of the stuff from https://github.com/sovereign/sovereign/roles/mailserver
+    * Copy most of the stuff from https://github.com/sovereign/sovereign/roles/webmail
 * Local email delivery
     * Use maildir format
 * IMAPD
@@ -81,3 +97,8 @@
     * Retro temperature metrics
         * Try with and without a proxy in front.
         * Proxy to make it appear as 1 app.
+* OwnCloud or something similar
+    * File server
+    * Calendar
+    * Contacts
+* RSS Feed reader?
