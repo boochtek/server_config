@@ -7,6 +7,8 @@
   tags: haproxy
 - include: nginx.yml
   tags: nginx
+- include: letsencrypt.yml
+  tags: letsencrypt
 - include: dokuwiki.yml
   tags: dokuwiki
 
