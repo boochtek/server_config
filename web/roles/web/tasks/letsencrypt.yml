@@ -1,0 +1,71 @@
+---
+
+- name: Install Let's Encrypt
+  apt:
+    name: "{{ item }}"
+    with_items:
+      - letsencrypt
+      - python-letsencrypt-apache
+      - python-letsencrypt-nginx
+
+- name: Install Let's Encrypt config file
+  template:
+    src: cli.ini.j2
+    dest: /etc/letsencrypt/cli.ini
+    owner: root
+    group: root
+    mode: 0640
+
+- name: Set up cron job for Let's Encrypt
+
+
+letsencrypt_src_directory: /usr/local/share/letsencrypt
+letsencrypt_venv: "{{ letsencrypt_src_directory }}/env"
+letsencrypt_cert_domains:
+  - "{{ ansible_fqdn }}"
+letsencrypt_webroot_path: /var/www
+letsencrypt_authenticator: webroot
+letsencrypt_email: "webmaster@{{ ansible_domain }}"
+letsencrypt_command: "{{ letsencrypt_venv }}/bin/letsencrypt --agree-tos --text {% for domain in letsencrypt_cert_domain
+
+
+
+- name: Install letsencrypt config
+
+
+rsa_key_size: 2048
+letsencrypt_server: https://acme-staging.api.letsencrypt.org/directory
+standalone_supported_challenges: "tls-sni-01"
+authenticator: "standalone"
+webroot_path: ""
+renew_days: 10
+certificate_path: /etc/letsencrypt/live
+
+
+- name: Check to see if cert has been generated
+  stat:
+    path: "{{ certificate_path }}/{{ subdomain }}.{{ domain }}/cert.pem"
+  register: cert_exists
+
+- name: Check to see when cert expires
+  command: "echo $((($(date --date \"$(date --date \"$(openssl x509 -in {{ certificate_path }}/{{ subdomain }}.{{ domain }}/cert.pem -noout -enddate | sed -n 's/notAfter=//p')\")\" +%s)-$(date --date now +%s))/86400))"
+  register: days_remaining
+  when: cert_exists.stat.exists
+
+- name: Generate certificate (Standalone) no install
+  command: "letsencrypt certonly --agree-tos --agree-dev-preview -d {{ subdomain }}.{{ domain }}"
+  when: authenticator == "standalone" and not cert_exists.stat.exists or cert_exists.stat.exists and days_remaining | int < "{{ renew_days }}"
+
+- name: Generate certificate (Standalone) apache install
+  command: "letsencrypt --installer apache --agree-tos --agree-dev-preview -d {{ subdomain }}.{{ domain }}"
+  when: authenticator == "standalone" and server_type == "apache" and not cert_exists.stat.exists or cert_exists.stat.exists and days_remaining | int < "{{ renew_days }}" and server_typpe == "apache"
+
+- name: Generate certificate (Standalone) nginx install
+  command: "letsencrypt --installer nginx --agree-tos --agree-dev-preview -d {{ subdomain }}.{{ domain }}"
+  when: authenticator == "standalone" and server_type == "nginx" and not cert_exists.stat.exists or cert_exists.stat.exists and days_remaining | int < "{{ renew_days }}" and server_type == "nginx"
+
+- name: Revoke certificate
+  command: "letsencrypt --agree-tos --agree-dev-preview --cert-path={{ certificate_path }}/{{ subdomain }}.{{ domain }}/cert.pem"
+  when: revoke is defined and cert_exists.stat.exists
+
+
