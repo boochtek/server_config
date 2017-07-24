@@ -77,8 +77,22 @@
   with_items:
     - { site: www.boochtek.com, domains: "www.boochtek.com,boochtek.com" }
 
+- name: Ensure Nginx is reloaded after Let's Encrypt certbot renews TLS certificates
+  lineinfile:
+    dest: /lib/systemd/system/certbot.service
+    line: ExecStartPost=/usr/sbin/nginx -s reload
+    insertafter: '^ExecStart='
+
+- name: Enable Let's Encrypt via certbot
+  systemd:
+    name: certbot.timer
+    state: started
+    enabled: TRUE
+    daemon_reload: TRUE
+    masked: FALSE
+
 - name: Ensure Nginx starts on reboot
   systemd:
     name: nginx
-    enabled: yes
-    masked: no
+    enabled: TRUE
+    masked: FALSE
