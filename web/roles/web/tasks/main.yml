@@ -7,8 +7,6 @@
   tags: nginx
 - include: letsencrypt.yml
   tags: letsencrypt
-- include: dokuwiki.yml
-  tags: dokuwiki
 
 - include: www.boochtek.com.yml
   tags: boochtek
