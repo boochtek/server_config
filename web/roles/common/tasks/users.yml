@@ -30,6 +30,7 @@
     path: /home/booch/.ssh
     state: directory
     mode: 0700
+  become: TRUE
   become_user: booch
 
 - name: Add SSH keys that can Craig can log in with
@@ -37,6 +38,7 @@
     src: files/home/booch/ssh/authorized_keys
     dest: /home/booch/.ssh/authorized_keys
     mode: 0600
+  become: TRUE
   become_user: booch
 
 - name: Install git
@@ -48,6 +50,7 @@
   git:
     dest: /home/booch/config_files
     repo: https://github.com/booch/config_files.git
+  become: TRUE
   become_user: booch
 
 - name: Install Craig's config files
@@ -55,4 +58,5 @@
   args:
     chdir: /home/booch/config_files
     creates: /home/booch/.nanorc
+  become: TRUE
   become_user: booch

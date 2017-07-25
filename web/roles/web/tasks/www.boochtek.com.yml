@@ -12,6 +12,7 @@
   git:
     dest: /var/www/www.boochtek.com/public
     repo: https://github.com/boochtek/boochtek.com.git
+  become: TRUE
   become_user: booch
 
 - name: Create Nginx site config for www.boochtek.com
