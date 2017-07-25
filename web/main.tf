@@ -45,7 +45,7 @@ resource "digitalocean_droplet" "main" {
     }
 
     provisioner "local-exec" {
-      command = "ANSIBLE_SSH_ARGS='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null' ansible-playbook -u root --skip-tags 'remove_root_access' -i '${self.ipv4_address},' web/main.yml"
+      command = "ANSIBLE_SSH_ARGS='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null' ansible-playbook -u root --skip-tags 'remove_root_access' -i '${digitalocean_droplet.main.ipv4_address},' web/main.yml"
     }
 
     provisioner "remote-exec" {
