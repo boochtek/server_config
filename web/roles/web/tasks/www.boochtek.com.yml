@@ -26,5 +26,5 @@
     src: /etc/nginx/sites-available/www.boochtek.com.conf
     state: link
   notify:
-    - Check Nginx configuation
+    - Check Nginx configuration
     - Reload Nginx

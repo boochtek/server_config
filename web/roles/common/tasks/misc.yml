@@ -81,6 +81,7 @@
 - name: Install chkconfig
   apt:
     name: chkconfig
+  when: (ansible_distribution == "Debian" and ansible_distribution_major_version < "9")
 
 # We prefer to use the `service` command, which provides a simple way to stop and start services.
 # It's the same as running the startup scripts in `/etc/init.d` manually,
@@ -129,7 +130,7 @@
 - name: Install OpenSSL and certificate management packages
   apt:
     name: "{{ item }}"
-    default_release: jessie-backports
+    default_release: "{{ ansible_distribution_release }}-backports"
   with_items:
     - openssl
     - ssl-cert

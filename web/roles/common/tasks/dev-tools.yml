@@ -67,24 +67,31 @@
   apt:
     name: tidy
 
-# The `ack` command is a nice replacement for recursive `grep`.
-# It does the "right thing" in many ways better than `grep` –
-# ignores non-text files, backup files, SVN/GIT repositories, etc.
-# For Debian 5.0+ systems, we can simply install the `ack-grep` package,
+# For Debian 5.0 - 8.x systems, we can install the `ack-grep` package,
 # but we make a link to make it available as `ack`.
 - name: Install ack
   apt:
     name: ack-grep
+  when: (ansible_distribution == "Debian" and ansible_distribution_major_version < "9")
 - name: Link ack, so we don't have to invoke it as ack-grep
   file:
     src: /usr/bin/ack-grep
     dest: /usr/local/bin/ack
     state: link
+  when: (ansible_distribution == "Debian" and ansible_distribution_major_version < "9")
 - name: Link ack man page
   file:
     src: /usr/share/man/man1/ack-grep.1p.gz
     dest: /usr/local/share/man/man1/ack.1p.gz
-    state: link
+  when: (ansible_distribution == "Debian" and ansible_distribution_major_version < "9")
+
+# For Debian 9.0+ systems, we can simply install the `ack` package,
+- name: Install ack (and similar tools)
+  apt:
+    name:
+      - ack                 # Nice replacement for `grep -R`; does the "right thing" in many ways – ignores non-text files, backup files, SVN/GIT repos, etc.
+      - silversearcher-ag   # Another alternative to `ack`
+  when: (ansible_distribution == "Debian" and ansible_distribution_major_version >= "9")
 
 - name: Install Python
   apt:
@@ -96,4 +103,3 @@
       - perl
       - perl-modules
       - perl-doc
-

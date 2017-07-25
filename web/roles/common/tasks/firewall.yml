@@ -39,19 +39,12 @@
   notify:
     - Restart Shorewall
 
-- name: Set Shorewall log rate limit
+- name: Set Shorewall log rate limits
   lineinfile:
     dest: /etc/shorewall/shorewall.conf
-    line: 'LOGRATE=10/minute'
-    regexp: '^#?LOGRATE='
-  notify:
-    - Restart Shorewall
-
-- name: Set Shorewall log burst limit
-  lineinfile:
-    dest: /etc/shorewall/shorewall.conf
-    line: 'LOGBURST=5'
-    regexp: '^#?LOGBURST='
+    line: 'LOGLIMIT="10/minute:5"'
+    regexp: '^#?LOGLIMIT='
+  when: (ansible_distribution == "Debian" and ansible_distribution_major_version >= "9")
   notify:
     - Restart Shorewall
 

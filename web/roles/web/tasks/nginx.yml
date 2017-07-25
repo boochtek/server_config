@@ -3,7 +3,7 @@
 - name: Install Nginx
   apt:
     name: "{{ item }}"
-    default_release: jessie-backports
+    default_release: "{{ ansible_distribution_release }}-backports"
   with_items:
     - nginx
     - nginx-doc
@@ -13,7 +13,7 @@
 - name: Install Let's Encrypt and certbot
   apt:
     name: "{{ item }}"
-    default_release: jessie-backports
+    default_release: "{{ ansible_distribution_release }}-backports"
   with_items:
     - letsencrypt
     - certbot

@@ -1,10 +1,10 @@
 ---
 
-# Backports includes (newer versions of) Ansible, letsencrypt, Docker, sysdig, tmux, Nginx, HAProxy, tcpdump, tshark, etc.
-- name: Add Jessie backports Apt repo
+# Backports includes (as of Debian 8) (newer versions of) Ansible, letsencrypt, Docker, sysdig, tmux, Nginx, HAProxy, tcpdump, tshark, etc.
+- name: Add backports Apt repo
   copy:
-    src: files/etc/apt/sources.list.d/jessie-backports.list
-    dest: /etc/apt/sources.list.d/jessie-backports.list
+    src: files/etc/apt/sources.list.d/{{ ansible_distribution_release }}-backports.list
+    dest: /etc/apt/sources.list.d/{{ ansible_distribution_release }}-backports.list
 
 - name: Update apt
   apt:
