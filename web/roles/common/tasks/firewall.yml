@@ -56,8 +56,8 @@
     - Restart Shorewall
 
 - name: Create Shorewall log file
-  command: touch /var/log/shorewall.log
-  args:
-    creates: /var/log/shorewall.log
+  file:
+    name: /var/log/shorewall.log
+    state: touch
   notify:
     - Restart Shorewall
