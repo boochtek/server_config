@@ -6,7 +6,7 @@ variable "domain" {
 # This sets the base image. We pretty much assume a Debian-based Linux server, but could probably use a version of Ubuntu.
 # List available images with `curl -X GET -H "Authorization: Bearer $DIGITALOCEAN_TOKEN" "https://api.digitalocean.com/v2/images?type=distribution" | jq '{distribution: .images[].distribution, name: .images[].name, slug: .images[].slug}'``.
 variable "base_image" {
-    default = "debian-8-x64"
+    default = "debian-9-x64"
 }
 
 # This sets a list of SSH keys that the server will be built with, giving them root SSH access.
@@ -26,7 +26,7 @@ provider "dnsimple" {
 
 
 resource "digitalocean_droplet" "main" {
-    name = "ocean1.${var.domain}"
+    name = "ocean2.${var.domain}"
     size = "1gb"
     image = "${var.base_image}"
     region = "nyc3"
