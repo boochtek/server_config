@@ -8,6 +8,11 @@
     owner: www-data
     group: www-data
 
+- name: Create Nginx site config for www.boochtek.com
+  copy:
+    src: files/etc/nginx/sites-available/www.boochtek.com.conf
+    dest: /etc/nginx/sites-available/www.boochtek.com.conf
+
 - name: Copy www.boochtek.com content from GitHub
   git:
     dest: /var/www/www.boochtek.com/public
@@ -15,10 +20,13 @@
   become: TRUE
   become_user: booch
 
-- name: Create Nginx site config for www.boochtek.com
-  copy:
-    src: files/etc/nginx/sites-available/www.boochtek.com.conf
-    dest: /etc/nginx/sites-available/www.boochtek.com.conf
+# NOTE: Nginx config for the site must point at the certificates in /etc/letsencrypt/live/.
+- name: Create TLS certificates for www.boochtek.com
+  command: certbot certonly -n --agree-tos --email 'craig@boochtek.com' --keep --webroot -w /var/www/{{ item.site }}/public -d {{ item.domains }} --renew-hook 'nginx -s reload'
+  args:
+    creates: /etc/letsencrypt/live/{{ item.site }}/cert.pem
+  with_items:
+    - { site: www.boochtek.com, domains: "www.boochtek.com,boochtek.com" }
 
 - name: Include www.boochtek.com site in Nginx config
   file:
