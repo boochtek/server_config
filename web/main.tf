@@ -18,9 +18,12 @@ variable "ssh_keys" {
 }
 
 
+# NOTE: You'll need to define environment variable `DIGITALOCEAN_TOKEN` for this to work.
 provider "digitalocean" {
 }
 
+
+# NOTE: You'll need to define environment variables `DNSIMPLE_ACCOUNT` and `DNSIMPLE_TOKEN` for this to work.
 provider "dnsimple" {
 }
 
